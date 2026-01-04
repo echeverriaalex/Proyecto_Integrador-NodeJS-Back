@@ -10,11 +10,16 @@ export const register = async (req, res, next) => {
         const user = new User({ name, email, password, token });
         await user.save();
         //mail(email, "Confirm your email", `Please confirm your email by clicking on this link: ${process.env.APP_URL}/auth/confirm/${token}`);
+        
+        /*
         mail(
             email, 
             "Confirm your registration", 
             `Thank you for registering ${name}. Please confirm your email. Your token is: ${token} http://localhost:4000/auth/confirm?token=${token}`
         );
+        */
+
+
         //res.status(201).json({ message: "User registered successfully" });
         res.status(201).json({ message: "User registered successfully", user });
     } catch (error) {
