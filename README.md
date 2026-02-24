@@ -1,66 +1,66 @@
 # Proyecto Integrador – NodeJS Backend
 
-REST API built with Node.js, Express and MongoDB.
+API REST construida con Node.js, Express y MongoDB.
 
-## Getting Started
+## Cómo iniciar
 
 ```bash
 npm install
-npm run dev   # development (nodemon)
-npm start     # production
+npm run dev   # desarrollo (nodemon)
+npm start     # producción
 ```
 
-The server listens on port `4000` by default (or the value of the `PORT` environment variable).
+El servidor escucha en el puerto `4000` por defecto (o el valor de la variable de entorno `PORT`).
 
 ---
 
-## API Endpoints
+## Endpoints de la API
 
-### Auth – `/auth`
+### Autenticación – `/auth`
 
-| Method | Path | Description | Auth required |
-|--------|------|-------------|---------------|
-| POST | `/auth/register` | Register a new user | No |
-| POST | `/auth/login` | Log in and receive a JWT | No |
-| POST | `/auth/refresh` | Refresh a JWT token | No |
-| GET  | `/auth/confirm` | Confirm email address | No |
-
----
-
-### Orders – `/orders`
-
-| Method | Path | Description | Auth required |
-|--------|------|-------------|---------------|
-| POST | `/orders/create` | **Create a new order** | Yes |
-| GET  | `/orders/mypurchases` | Get orders for the authenticated user | Yes |
+| Método | Ruta | Descripción | Requiere autenticación |
+|--------|------|-------------|------------------------|
+| POST | `/auth/register` | Registrar un nuevo usuario | No |
+| POST | `/auth/login` | Iniciar sesión y obtener un JWT | No |
+| POST | `/auth/refresh` | Renovar un token JWT | No |
+| GET  | `/auth/confirm` | Confirmar dirección de email | No |
 
 ---
 
-#### POST `/orders/create` – Create a new order
+### Órdenes – `/orders`
 
-All protected routes require a valid JWT sent in the `Authorization` header:
+| Método | Ruta | Descripción | Requiere autenticación |
+|--------|------|-------------|------------------------|
+| POST | `/orders/create` | **Crear una nueva orden** | Sí |
+| GET  | `/orders/mypurchases` | Obtener las órdenes del usuario autenticado | Sí |
+
+---
+
+#### POST `/orders/create` – Crear una nueva orden
+
+Todas las rutas protegidas requieren un JWT válido enviado en el encabezado `Authorization`:
 
 ```
 Authorization: Bearer <token>
 ```
 
-**Request body (JSON)**
+**Cuerpo de la solicitud (JSON)**
 
 ```json
 {
   "items": [
     {
       "id": 1,
-      "title": "Product name",
-      "description": "Product description",
-      "image": "https://example.com/image.jpg",
+      "title": "Nombre del producto",
+      "description": "Descripción del producto",
+      "image": "https://ejemplo.com/imagen.jpg",
       "quantity": 2,
       "price": 150.00
     }
   ],
   "shippingDetails": {
-    "name": "John Doe",
-    "cellphone": "+1234567890",
+    "name": "Juan Pérez",
+    "cellphone": "+541234567890",
     "location": "Buenos Aires",
     "address": "Av. Corrientes 1234"
   },
@@ -68,23 +68,23 @@ Authorization: Bearer <token>
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `items` | array | Yes | Non-empty array of order items |
-| `items[].id` | number | Yes | Product ID |
-| `items[].title` | string | Yes | Product title |
-| `items[].description` | string | Yes | Product description |
-| `items[].image` | string | Yes | Product image URL |
-| `items[].quantity` | number | Yes | Quantity (must be > 0) |
-| `items[].price` | number | Yes | Unit price (must be ≥ 0) |
-| `shippingDetails` | object | Yes | Shipping information |
-| `shippingDetails.name` | string | Yes | Recipient name |
-| `shippingDetails.cellphone` | string | Yes | Recipient phone number |
-| `shippingDetails.location` | string | Yes | City / region |
-| `shippingDetails.address` | string | Yes | Street address |
-| `shippingCost` | number | Yes | Shipping cost (must be ≥ 0) |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `items` | array | Sí | Array no vacío de productos de la orden |
+| `items[].id` | number | Sí | ID del producto |
+| `items[].title` | string | Sí | Nombre del producto |
+| `items[].description` | string | Sí | Descripción del producto |
+| `items[].image` | string | Sí | URL de la imagen del producto |
+| `items[].quantity` | number | Sí | Cantidad (debe ser > 0) |
+| `items[].price` | number | Sí | Precio unitario (debe ser ≥ 0) |
+| `shippingDetails` | object | Sí | Datos de envío |
+| `shippingDetails.name` | string | Sí | Nombre del destinatario |
+| `shippingDetails.cellphone` | string | Sí | Teléfono del destinatario |
+| `shippingDetails.location` | string | Sí | Ciudad / región |
+| `shippingDetails.address` | string | Sí | Dirección de entrega |
+| `shippingCost` | number | Sí | Costo de envío (debe ser ≥ 0) |
 
-**Successful response – `201 Created`**
+**Respuesta exitosa – `201 Created`**
 
 ```json
 {
@@ -101,14 +101,14 @@ Authorization: Bearer <token>
 }
 ```
 
-> `subtotal` and `total` are calculated automatically by the server:
-> - `subtotal = sum(item.price * item.quantity)`
+> `subtotal` y `total` son calculados automáticamente por el servidor:
+> - `subtotal = suma(item.price * item.quantity)`
 > - `total = subtotal + shippingCost`
 
-**Error responses**
+**Respuestas de error**
 
-| Status | Meaning |
-|--------|---------|
-| 400 | Validation error – check the response body for details |
-| 401 | Unauthorized – missing or invalid JWT |
-| 500 | Internal server error |
+| Estado | Significado |
+|--------|-------------|
+| 400 | Error de validación – revisar el cuerpo de la respuesta para más detalles |
+| 401 | No autorizado – JWT ausente o inválido |
+| 500 | Error interno del servidor |
